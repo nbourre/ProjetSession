@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.spc = new gei1076_tools.SerialPortConfigurator();
             this.tmrCam = new System.Windows.Forms.Timer(this.components);
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabPrincipale = new System.Windows.Forms.TabPage();
@@ -46,21 +45,13 @@
             this.txtIPServeur = new System.Windows.Forms.TextBox();
             this.tmrSerie = new System.Windows.Forms.Timer(this.components);
             this.tmrMain = new System.Windows.Forms.Timer(this.components);
+            this.spc = new gei1076_tools.SerialPortConfigurator();
             this.tabMain.SuspendLayout();
             this.tabPrincipale.SuspendLayout();
             this.tabCamera.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbCamera)).BeginInit();
             this.tabConfig.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // spc
-            // 
-            this.spc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.spc.Location = new System.Drawing.Point(3, 6);
-            this.spc.Name = "spc";
-            this.spc.Size = new System.Drawing.Size(784, 93);
-            this.spc.TabIndex = 0;
             // 
             // tmrCam
             // 
@@ -129,13 +120,13 @@
             // 
             // tabConfig
             // 
+            this.tabConfig.Controls.Add(this.spc);
             this.tabConfig.Controls.Add(this.btnTestConnexion);
             this.tabConfig.Controls.Add(this.label2);
             this.tabConfig.Controls.Add(this.txtPort);
             this.tabConfig.Controls.Add(this.btnConnexion);
             this.tabConfig.Controls.Add(this.label1);
             this.tabConfig.Controls.Add(this.txtIPServeur);
-            this.tabConfig.Controls.Add(this.spc);
             this.tabConfig.Location = new System.Drawing.Point(4, 22);
             this.tabConfig.Name = "tabConfig";
             this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
@@ -208,6 +199,15 @@
             this.tmrMain.Interval = 250;
             this.tmrMain.Tick += new System.EventHandler(this.tmrMain_Tick);
             // 
+            // spc
+            // 
+            this.spc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.spc.Location = new System.Drawing.Point(7, 7);
+            this.spc.Name = "spc";
+            this.spc.Size = new System.Drawing.Size(780, 93);
+            this.spc.TabIndex = 7;
+            // 
             // frmRelais
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -230,8 +230,7 @@
         }
 
         #endregion
-
-        private gei1076_tools.SerialPortConfigurator spc;
+        
         private System.Windows.Forms.Timer tmrCam;
         private System.Windows.Forms.TabControl tabMain;
         private System.Windows.Forms.TabPage tabCamera;
@@ -248,6 +247,7 @@
         private System.Windows.Forms.TabPage tabPrincipale;
         private System.Windows.Forms.Label lblDataRead;
         private System.Windows.Forms.TextBox txtDataRead;
+        private gei1076_tools.SerialPortConfigurator spc;
     }
 }
 
