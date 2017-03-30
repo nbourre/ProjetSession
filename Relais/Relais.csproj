@@ -39,6 +39,7 @@
     <Reference Include="gei1076_tools, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\gei1076_tools.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="OpenCvSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenCvSharp3-AnyCPU.3.2.0.20170324\lib\net40\OpenCvSharp.dll</HintPath>

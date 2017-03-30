@@ -116,7 +116,8 @@ namespace Gestionnaire
 
         private void frmGestionnaire_FormClosing(object sender, FormClosingEventArgs e)
         {
-            threadServeur.Abort();
+            if (threadServeur.IsAlive)
+                threadServeur.Abort();
         }
     }
 }
