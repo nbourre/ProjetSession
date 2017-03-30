@@ -37,7 +37,6 @@
             this.tabCamera = new System.Windows.Forms.TabPage();
             this.pbCamera = new System.Windows.Forms.PictureBox();
             this.tabConfig = new System.Windows.Forms.TabPage();
-            this.btnTestConnexion = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.txtPort = new System.Windows.Forms.TextBox();
             this.btnConnexion = new System.Windows.Forms.Button();
@@ -121,7 +120,6 @@
             // tabConfig
             // 
             this.tabConfig.Controls.Add(this.spc);
-            this.tabConfig.Controls.Add(this.btnTestConnexion);
             this.tabConfig.Controls.Add(this.label2);
             this.tabConfig.Controls.Add(this.txtPort);
             this.tabConfig.Controls.Add(this.btnConnexion);
@@ -134,16 +132,6 @@
             this.tabConfig.TabIndex = 1;
             this.tabConfig.Text = "Configuration";
             this.tabConfig.UseVisualStyleBackColor = true;
-            // 
-            // btnTestConnexion
-            // 
-            this.btnTestConnexion.Location = new System.Drawing.Point(328, 144);
-            this.btnTestConnexion.Name = "btnTestConnexion";
-            this.btnTestConnexion.Size = new System.Drawing.Size(75, 23);
-            this.btnTestConnexion.TabIndex = 6;
-            this.btnTestConnexion.Text = "Test";
-            this.btnTestConnexion.UseVisualStyleBackColor = true;
-            this.btnTestConnexion.Click += new System.EventHandler(this.btnTestConnexion_Click);
             // 
             // label2
             // 
@@ -206,7 +194,7 @@
             this.spc.Location = new System.Drawing.Point(7, 7);
             this.spc.Name = "spc";
             this.spc.Size = new System.Drawing.Size(780, 93);
-            this.spc.TabIndex = 7;
+            this.spc.TabIndex = 6;
             // 
             // frmRelais
             // 
