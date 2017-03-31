@@ -34,12 +34,16 @@ namespace Relais
         {
             InitializeComponent();
 
-
+            // Laisser là pour éviter le bogue du designer
+            this.tabConfig.Controls.Add(this.spc);
 
         }
 
         private void frmRelais_Load(object sender, EventArgs e)
         {
+            txtIPView.DataBindings.Add(new Binding("Text", txtIPServeur, "Text"));
+            txtLocalView.DataBindings.Add(new Binding("Text", txtLocal, "Text"));
+
             initReseau();
             initPortSerie();
             initCamera();
@@ -217,5 +221,7 @@ namespace Relais
 
             return cleaned;
         }
+
+
     }
 }
