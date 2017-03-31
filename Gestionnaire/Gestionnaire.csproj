@@ -58,6 +58,9 @@
       <DependentUpon>frmGestionnaire.cs</DependentUpon>
     </Compile>
     <Compile Include="GestionnaireBUS.cs" />
+    <Compile Include="Helper.cs" />
+    <Compile Include="PermissionModel.cs" />
+    <Compile Include="PersonneModel.cs" />
     <Compile Include="LocalModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

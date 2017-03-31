@@ -5,6 +5,7 @@ using gei1076_tools;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Linq;
 
 namespace Relais
 {
@@ -123,6 +124,7 @@ namespace Relais
         {
             ps = spc.getPS();
 
+            spc.DataBindings.Add(new Binding("Enabled", rbtnSerie, "Checked"));
             tmrSerie.Enabled = true;
         }
 
@@ -153,8 +155,11 @@ namespace Relais
 
         private void envoyer()
         {
+            if (endPoint == null) return;
+
             int valeurInitiale = 0;
             Socket socketEnvoi = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
             adresseIP = IPAddress.Parse(txtIPServeur.Text);
             endPoint = new IPEndPoint(adresseIP, int.Parse(txtPort.Text));
 
@@ -168,7 +173,6 @@ namespace Relais
                 return;
             }
 
-            trameReseau = Encoding.ASCII.GetBytes("Alive!");
             //for (int i = 0; i < tailleReseau; ++i)
             //    trameReseau[i] = (byte)(valeurInitiale + i);
 
@@ -176,17 +180,42 @@ namespace Relais
 
             socketEnvoi.Send(trameReseau);
 
-            socketEnvoi.Receive(trameReseau);
-
             socketEnvoi.Dispose();
-
-            //AjouteHistorique("Reception Client " + tamponClient[0].ToString(), lstHistorique);
+            
         }
 
 
-        private void btnTestConnexion_Click(object sender, EventArgs e)
+        bool okToSend = false;
+
+        private void txtUSB_TextChanged(object sender, EventArgs e)
         {
-            envoyer();
+            if (txtUSB.Text.Contains("\r"))
+            {
+                okToSend = true;
+            }
+
+            string cardId = cleanCardID(txtUSB.Text);
+
+
+            if (okToSend)
+            {
+                txtUSB.Text = "";
+
+                txtMsg.Text += cardId + "\r\n";
+
+                trameReseau = Encoding.ASCII.GetBytes(cleanCardID(cardId));
+                envoyer();
+                okToSend = false;
+            }
+        }
+
+        private string cleanCardID(string cardId)
+        {
+            if (string.IsNullOrEmpty(cardId)) return cardId;
+
+            string cleaned = new string(cardId.Where(char.IsDigit).ToArray());
+
+            return cleaned;
         }
     }
 }

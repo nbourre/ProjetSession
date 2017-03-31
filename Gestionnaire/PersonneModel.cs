@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Gestionnaire
 {
-    class LocalModel
+    class PersonneModel
     {
         public int Id { get; set; }
-        public string Numero { get; set; }
-        public string Description { get; set; }
+        public string CodeCarte { get; set; }
+        public string Nom { get; set; }
+        public string Prenom { get; set; }
 
     }
 }

@@ -27,7 +27,7 @@ namespace Gestionnaire
         /// <returns>La connexion</returns>
         private OleDbConnection ouvrirConnexion()
         {
-            if (conn.State == ConnectionState.Open||
+            if (conn.State == ConnectionState.Closed||
                 conn.State == ConnectionState.Broken)
             {
                 conn.Open();
@@ -59,7 +59,10 @@ namespace Gestionnaire
             {
                 commande.Connection = ouvrirConnexion();
                 commande.CommandText = _query;
-                commande.Parameters.AddRange(sqlParameter);
+
+                if (sqlParameter != null)
+                    commande.Parameters.AddRange(sqlParameter);
+
                 commande.ExecuteNonQuery();
                 adapteur.SelectCommand = commande;
                 adapteur.Fill(ds);
@@ -97,6 +100,7 @@ namespace Gestionnaire
             {
                 commande.Connection = ouvrirConnexion();
                 commande.CommandText = _query;
+
                 commande.Parameters.AddRange(sqlParameters);
 
                 switch (crud)
