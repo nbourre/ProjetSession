@@ -35,7 +35,7 @@ namespace Relais
             InitializeComponent();
 
             // Laisser là pour éviter le bogue du designer
-            this.tabConfig.Controls.Add(this.spc);
+            //this.tabConfig.Controls.Add(this.spc);
 
         }
 
@@ -222,6 +222,9 @@ namespace Relais
             return cleaned;
         }
 
-
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
+        }
     }
 }
