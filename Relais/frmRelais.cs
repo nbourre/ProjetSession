@@ -6,21 +6,28 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Linq;
+using System.IO;
+using System.Drawing.Imaging;
 
 namespace Relais
 {
     public partial class frmRelais : Form
     {
+        public enum AccesTypes { aucun, hors_plage, ok };
+
         // Réseau
         Socket socket;
         IPAddress adresseIP;
         IPEndPoint endPoint;
         byte[] trameReseau;
-        int tailleReseau = 10;
+        int networkBufferSize = 256;
+        byte[] reponse;
+        bool donneesReseauPretes = false;
 
         // Image
         VideoCapture cap = new VideoCapture(0);
         Mat frame = new Mat();
+        MemoryStream ms = new MemoryStream();
 
         // Port série
         private const int tailleTrame = 28;
@@ -28,14 +35,14 @@ namespace Relais
         private byte[] tableau = new byte[tailleTrame];
         PortSerie ps;
         private byte octet;
-        bool donneesPretes = false;
+        bool donneesSeriePretes = false;
+
+        string cardId = "";
+        string localNumber = "";
 
         public frmRelais()
         {
             InitializeComponent();
-
-            // Laisser là pour éviter le bogue du designer
-            //this.tabConfig.Controls.Add(this.spc);
 
         }
 
@@ -43,6 +50,9 @@ namespace Relais
         {
             txtIPView.DataBindings.Add(new Binding("Text", txtIPServeur, "Text"));
             txtLocalView.DataBindings.Add(new Binding("Text", txtLocal, "Text"));
+
+            lblUSB.DataBindings.Add(new Binding("Enabled", rbtnUSB, "Checked"));
+            txtUSB.DataBindings.Add(new Binding("Enabled", rbtnUSB, "Checked"));
 
             initReseau();
             initPortSerie();
@@ -82,7 +92,7 @@ namespace Relais
                     if (octet == 0xA5)
                     {   
                         ps.LireOctets(tableau, 0, tailleTrame);
-                        donneesPretes = true;
+                        donneesSeriePretes = true;
                     }
                 }
             }
@@ -94,15 +104,48 @@ namespace Relais
         {
             tmrMain.Enabled = false;
 
-            if (donneesPretes)
+            if (donneesSeriePretes)
             {
                 string identifiant = Encoding.ASCII.GetString(tableau);
 
-                txtDataRead.AppendText (identifiant);
-                txtDataRead.AppendText (Environment.NewLine);
-         
-                donneesPretes = false;
+                if (txtDataRead.Lines.Length > 9)
+                {
+                    txtDataRead.Lines[txtDataRead.Lines.Length - 1] = null;
+                }
+
+                txtDataRead.Text.Insert(0, identifiant + Environment.NewLine);
                 
+                donneesSeriePretes = false;
+            }
+
+            if (donneesReseauPretes)
+            {
+                StringBuilder sb = new StringBuilder();
+
+                sb.Append(DateTime.Now.ToString() + " -- ");
+
+                switch (reponse[0])
+                {
+                    
+                    case (int)AccesTypes.aucun:
+                        sb.Append("Aucun");
+                        break;
+                    case (int)AccesTypes.hors_plage:
+                        sb.Append("Hors plage");
+                        break;
+                    case (int)AccesTypes.ok:
+                        sb.Append("Ok");
+                        break;
+                }
+
+                sb.Append(Environment.NewLine);
+
+                txtDemandes.Text = txtDemandes.Text.Insert(0, sb.ToString());
+
+                // Écriture au port série
+                ps.EcrireOctet(reponse[0]);
+
+                donneesReseauPretes = false;
             }
 
             tmrMain.Enabled = true;
@@ -135,7 +178,8 @@ namespace Relais
         private void initReseau()
         {
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            trameReseau = new byte[tailleReseau];
+            trameReseau = new byte[networkBufferSize];
+            reponse = new byte[1];
         }
 
         private void btnConnexion_Click(object sender, EventArgs e)
@@ -161,55 +205,75 @@ namespace Relais
         {
             if (endPoint == null) return;
 
-            int valeurInitiale = 0;
+            
             Socket socketEnvoi = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             adresseIP = IPAddress.Parse(txtIPServeur.Text);
             endPoint = new IPEndPoint(adresseIP, int.Parse(txtPort.Text));
 
-            try
-            {
-                valeurInitiale = int.Parse(txtPort.Text);
-            }
-            catch
-            {
-                MessageBox.Show("la valeur doit etre un entier", "ERREUR");
-                return;
-            }
-
-            //for (int i = 0; i < tailleReseau; ++i)
-            //    trameReseau[i] = (byte)(valeurInitiale + i);
-
             socketEnvoi.Connect(endPoint);
+            
+            //socketEnvoi.Send(message.Data);
 
+            // Envoyer le local et la clé
             socketEnvoi.Send(trameReseau);
 
+            // Attendre la réponse du serveur
+            socketEnvoi.Receive(reponse);
+
+            // Envoyer l'image
+            socketEnvoi.Send(ms.ToArray());
+
             socketEnvoi.Dispose();
+
+            donneesReseauPretes = true;
             
         }
 
 
         bool okToSend = false;
+        int txtEventCount = 0;
+        MessageOverSocket message;
 
         private void txtUSB_TextChanged(object sender, EventArgs e)
         {
-            if (txtUSB.Text.Contains("\r"))
+            if (txtEventCount < 1)
             {
-                okToSend = true;
-            }
+                
+                if (txtUSB.Text.Contains("\r"))
+                {
+                    txtUSB.Text.Replace("\r", "");
+                    txtUSB.Text.Replace("\n", "");
+                    okToSend = true;
+                }
 
-            string cardId = cleanCardID(txtUSB.Text);
+                if (okToSend)
+                {
+                    txtEventCount++;
+                    cardId = cleanCardID(txtUSB.Text);
+                    localNumber = txtLocal.Text;
 
+                    txtMsg.Text += cardId + "\r\n";
 
-            if (okToSend)
-            {
-                txtUSB.Text = "";
+                    
 
-                txtMsg.Text += cardId + "\r\n";
+                    // Creation du paquet
+                    trameReseau = Encoding.ASCII.GetBytes(localNumber + "~" + cardId);
 
-                trameReseau = Encoding.ASCII.GetBytes(cleanCardID(cardId));
-                envoyer();
-                okToSend = false;
+                    if (pbCamera.Image != null)
+                    {
+                        pbCamera.Image.Save(ms, ImageFormat.Bmp);
+                        ms.Position = 0;
+                    }
+
+                    message = MessageSerializer.Serialize(new Snapshot(localNumber, cardId, pbCamera.Image));
+
+                    envoyer();
+
+                    txtUSB.Text = "";
+                    okToSend = false;
+                    txtEventCount = 0;
+                }
             }
         }
 

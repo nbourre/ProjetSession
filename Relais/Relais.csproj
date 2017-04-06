@@ -78,8 +78,11 @@
     <Compile Include="frmRelais.Designer.cs">
       <DependentUpon>frmRelais.cs</DependentUpon>
     </Compile>
+    <Compile Include="MessageOverSocket.cs" />
+    <Compile Include="MessageSerializer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Snapshot.cs" />
     <EmbeddedResource Include="frmRelais.resx">
       <DependentUpon>frmRelais.cs</DependentUpon>
     </EmbeddedResource>

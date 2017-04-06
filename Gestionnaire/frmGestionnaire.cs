@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Gestionnaire
@@ -20,19 +17,47 @@ namespace Gestionnaire
         bool enEcoute = false;
         TcpListener ecouteTCP;
 
-        int taille = 10;
+        int networkBufferSize = 256;
+        int imageBufferSize = 1000000;
+
         private byte[] tamponServeurReception;
         private byte[] tamponServeurExpedition;
+        private byte[] tamponImage;
         private bool donneesRecues = false;
 
+        private List<string> historique;
+
+        GestionnaireBUS.AccesTypes dernierAcces;
 
         public frmGestionnaire()
         {
             InitializeComponent();
 
-            tamponServeurReception = new byte[taille];
-            tamponServeurExpedition = new byte[taille];
+            tamponServeurReception = new byte[networkBufferSize];
+            tamponServeurExpedition = new byte[1];
+            tamponImage = new byte[imageBufferSize];
+
+            historique = new List<string>();
+
+            Binding ipBind = new Binding("SelectedItem", txtIP_view, "Text");
+
+            ipBind.Format += new ConvertEventHandler(ipBind_format);
+            ipBind.Parse += new ConvertEventHandler(ipBind_format);
+
+            cboIPs.DataBindings.Add(ipBind);
         }
+
+        private void ipBind_format(object sender, ConvertEventArgs e)
+        {
+            ComboBox cbo = (ComboBox)((Binding)sender).Control;
+
+            if (cbo.SelectedItem != null)
+            {
+                e.Value = cbo.SelectedItem.ToString() + ":" + txtPort.Text;
+            }
+            
+        }
+
 
         private void demarrerEcoute()
         {
@@ -61,26 +86,37 @@ namespace Gestionnaire
 
         private void GereEcoute()
         {
+            int counter = 0;
+
             while (enEcoute)
             {
+                
                 if (ecouteTCP.Pending())
                 {
+                    counter++;
                     TcpClient clientTcp = ecouteTCP.AcceptTcpClient();
                     NetworkStream stream = clientTcp.GetStream();
 
-                    stream.Read(tamponServeurReception, 0, taille);
+                    stream.Read(tamponServeurReception, 0, networkBufferSize);
 
-                    // tamponServeurExpedition = Encoding.ASCII.GetBytes("Ok!");
-                    //for (int i = 0; i < taille; ++i)
-                    //    tamponServeurExpedition[i] = (byte)(tamponServeurReception[i] + 1);
+                    // interroger la BD
+                    dernierAcces = 
+                        interrogerBD(Encoding.ASCII.GetString(tamponServeurReception));
 
-                    // stream.Write(tamponServeurExpedition, 0, taille);
+                    //Envoyer la réponse                    
+                    tamponServeurExpedition[0] = (byte)dernierAcces;         
+                    stream.Write(tamponServeurExpedition, 0, 1);
 
+                    // Attendre l'image
+                    stream.Read(tamponImage, 0, imageBufferSize);
+                    
                     clientTcp.Close();
+
                     donneesRecues = true;
                 }
                 else
                 {
+                    counter = 0;
                     Thread.Sleep(20);
                 }
             }
@@ -93,23 +129,33 @@ namespace Gestionnaire
 
             if (donneesRecues)
             {
-                string noCarte = Encoding.ASCII.GetString(tamponServeurReception);
-                AjouteHistorique(noCarte, lstHistorique);
+                lstHistorique.Items.Clear();
 
-                string timeInMetric = DateTime.Now.Hour.ToString() + ((int)(DateTime.Now.Minute / 60.0 * 100.0)).ToString();
+                foreach (object o in historique)
+                {
+                    lstHistorique.Items.Add(o);
+                }
 
-                switch (GestionnaireBUS.AAccess(noCarte, "1133", timeInMetric))
+                if (tamponImage != null)
+                {
+                    MemoryStream ms = new MemoryStream(tamponImage);
+
+                    pbRelais.Image = Image.FromStream(ms);
+                }
+
+                switch(dernierAcces)
                 {
                     case GestionnaireBUS.AccesTypes.aucun:
-                        txtMsg.Text = "Aucun";
+                        txtMsg.Text = "Aucun accès";
+                        break;
+                    case GestionnaireBUS.AccesTypes.ok:
+                        txtMsg.Text = "Ok";
                         break;
                     case GestionnaireBUS.AccesTypes.hors_plage:
                         txtMsg.Text = "Hors plage";
                         break;
-                    case GestionnaireBUS.AccesTypes.ok:
-                        txtMsg.Text = "Accès";
-                        break;
                 }
+
 
                 donneesRecues = false;
             }
@@ -119,14 +165,16 @@ namespace Gestionnaire
 
         private void AjouteHistorique(string chaine, ListBox lst)
         {
-            if (lst.Items.Count > 9)
-                lst.Items.RemoveAt(0);
-            lst.Items.Add(chaine);
+            if (historique.Count > 9)
+                historique.RemoveAt(0);
+            historique.Add(chaine);
         }
 
         private void btnConnexion_Click(object sender, EventArgs e)
         {
             demarrerEcoute();
+
+            tabMain.SelectedTab = tpgPrincipale;
         }
 
         private void frmGestionnaire_FormClosing(object sender, FormClosingEventArgs e)
@@ -152,6 +200,8 @@ namespace Gestionnaire
         {
             initIPList();
             initDB();
+
+            tabMain.SelectedTab = tabConfig;
         }
 
         private void initDB()
@@ -207,6 +257,29 @@ namespace Gestionnaire
                     txtMsg.Text = "Accès";
                     break;
             }
+        }
+
+        private GestionnaireBUS.AccesTypes interrogerBD (string donnees)
+        {
+            GestionnaireBUS.AccesTypes resultat = GestionnaireBUS.AccesTypes.aucun;
+
+            string[] donneesBrutes = donnees.Replace("\0", "").Split('~');
+
+            string local = donneesBrutes[0];
+            string noCarte = donneesBrutes[1].Trim();
+
+            AjouteHistorique(local + " <-- " + noCarte, lstHistorique);
+
+            string timeInMetric = DateTime.Now.Hour.ToString() + ((int)(DateTime.Now.Minute / 60.0 * 100.0)).ToString();
+
+            resultat = GestionnaireBUS.AAccess(noCarte, local, timeInMetric);
+
+            return resultat;
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

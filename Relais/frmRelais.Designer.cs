@@ -37,9 +37,6 @@
             this.txtIPView = new System.Windows.Forms.TextBox();
             this.txtLocalView = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtUSB = new System.Windows.Forms.TextBox();
             this.txtMsg = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.lblDataRead = new System.Windows.Forms.Label();
@@ -61,6 +58,10 @@
             this.spc = new gei1076_tools.SerialPortConfigurator();
             this.tmrSerie = new System.Windows.Forms.Timer(this.components);
             this.tmrMain = new System.Windows.Forms.Timer(this.components);
+            this.lblUSB = new System.Windows.Forms.Label();
+            this.txtUSB = new System.Windows.Forms.TextBox();
+            this.txtDemandes = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.tabMain.SuspendLayout();
             this.tabPrincipale.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -92,12 +93,11 @@
             // tabPrincipale
             // 
             this.tabPrincipale.Controls.Add(this.groupBox3);
-            this.tabPrincipale.Controls.Add(this.button1);
-            this.tabPrincipale.Controls.Add(this.label4);
-            this.tabPrincipale.Controls.Add(this.txtUSB);
             this.tabPrincipale.Controls.Add(this.txtMsg);
             this.tabPrincipale.Controls.Add(this.label3);
+            this.tabPrincipale.Controls.Add(this.label4);
             this.tabPrincipale.Controls.Add(this.lblDataRead);
+            this.tabPrincipale.Controls.Add(this.txtDemandes);
             this.tabPrincipale.Controls.Add(this.txtDataRead);
             this.tabPrincipale.Location = new System.Drawing.Point(4, 22);
             this.tabPrincipale.Name = "tabPrincipale";
@@ -156,46 +156,18 @@
             this.label7.TabIndex = 16;
             this.label7.Text = "Adresse IP :";
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(652, 200);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 13;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(29, 340);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(74, 13);
-            this.label4.TabIndex = 12;
-            this.label4.Text = "Lecture USB :";
-            // 
-            // txtUSB
-            // 
-            this.txtUSB.Location = new System.Drawing.Point(109, 337);
-            this.txtUSB.Multiline = true;
-            this.txtUSB.Name = "txtUSB";
-            this.txtUSB.Size = new System.Drawing.Size(160, 20);
-            this.txtUSB.TabIndex = 11;
-            this.txtUSB.TextChanged += new System.EventHandler(this.txtUSB_TextChanged);
-            // 
             // txtMsg
             // 
-            this.txtMsg.Location = new System.Drawing.Point(321, 98);
+            this.txtMsg.Location = new System.Drawing.Point(3, 223);
             this.txtMsg.Multiline = true;
             this.txtMsg.Name = "txtMsg";
-            this.txtMsg.Size = new System.Drawing.Size(214, 222);
+            this.txtMsg.Size = new System.Drawing.Size(237, 178);
             this.txtMsg.TabIndex = 5;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(318, 82);
+            this.label3.Location = new System.Drawing.Point(0, 207);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(50, 13);
             this.label3.TabIndex = 4;
@@ -204,18 +176,18 @@
             // lblDataRead
             // 
             this.lblDataRead.AutoSize = true;
-            this.lblDataRead.Location = new System.Drawing.Point(29, 82);
+            this.lblDataRead.Location = new System.Drawing.Point(0, 6);
             this.lblDataRead.Name = "lblDataRead";
-            this.lblDataRead.Size = new System.Drawing.Size(85, 13);
+            this.lblDataRead.Size = new System.Drawing.Size(106, 13);
             this.lblDataRead.TabIndex = 4;
-            this.lblDataRead.Text = "Données reçues";
+            this.lblDataRead.Text = "Dernières cartes lues";
             // 
             // txtDataRead
             // 
-            this.txtDataRead.Location = new System.Drawing.Point(32, 98);
+            this.txtDataRead.Location = new System.Drawing.Point(3, 22);
             this.txtDataRead.Multiline = true;
             this.txtDataRead.Name = "txtDataRead";
-            this.txtDataRead.Size = new System.Drawing.Size(237, 222);
+            this.txtDataRead.Size = new System.Drawing.Size(237, 178);
             this.txtDataRead.TabIndex = 3;
             // 
             // tabCamera
@@ -239,10 +211,13 @@
             // 
             // tabConfig
             // 
+            this.tabConfig.Controls.Add(this.lblUSB);
+            this.tabConfig.Controls.Add(this.txtUSB);
             this.tabConfig.Controls.Add(this.label5);
             this.tabConfig.Controls.Add(this.txtLocal);
             this.tabConfig.Controls.Add(this.groupBox2);
             this.tabConfig.Controls.Add(this.groupBox1);
+            this.tabConfig.Controls.Add(this.spc);
             this.tabConfig.Location = new System.Drawing.Point(4, 22);
             this.tabConfig.Name = "tabConfig";
             this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
@@ -266,7 +241,7 @@
             this.txtLocal.Name = "txtLocal";
             this.txtLocal.Size = new System.Drawing.Size(100, 20);
             this.txtLocal.TabIndex = 10;
-            this.txtLocal.Text = "0000";
+            this.txtLocal.Text = "1133";
             // 
             // groupBox2
             // 
@@ -288,7 +263,7 @@
             this.txtIPServeur.Name = "txtIPServeur";
             this.txtIPServeur.Size = new System.Drawing.Size(100, 20);
             this.txtIPServeur.TabIndex = 1;
-            this.txtIPServeur.Text = "172.16.200.144";
+            this.txtIPServeur.Text = "172.16.225.9";
             // 
             // label1
             // 
@@ -378,6 +353,41 @@
             this.tmrMain.Interval = 250;
             this.tmrMain.Tick += new System.EventHandler(this.tmrMain_Tick);
             // 
+            // lblUSB
+            // 
+            this.lblUSB.AutoSize = true;
+            this.lblUSB.Location = new System.Drawing.Point(53, 181);
+            this.lblUSB.Name = "lblUSB";
+            this.lblUSB.Size = new System.Drawing.Size(94, 13);
+            this.lblUSB.TabIndex = 14;
+            this.lblUSB.Text = "Test lecture USB :";
+            // 
+            // txtUSB
+            // 
+            this.txtUSB.Location = new System.Drawing.Point(153, 178);
+            this.txtUSB.Multiline = true;
+            this.txtUSB.Name = "txtUSB";
+            this.txtUSB.Size = new System.Drawing.Size(160, 20);
+            this.txtUSB.TabIndex = 13;
+            this.txtUSB.TextChanged += new System.EventHandler(this.txtUSB_TextChanged);
+            // 
+            // txtDemandes
+            // 
+            this.txtDemandes.Location = new System.Drawing.Point(246, 22);
+            this.txtDemandes.Multiline = true;
+            this.txtDemandes.Name = "txtDemandes";
+            this.txtDemandes.Size = new System.Drawing.Size(237, 178);
+            this.txtDemandes.TabIndex = 3;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(243, 6);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(98, 13);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Demandes d\'accès";
+            // 
             // frmRelais
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -402,7 +412,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
-            this.tabConfig.Controls.Add(this.spc);
+
         }
 
         #endregion
@@ -429,9 +439,6 @@
         private System.Windows.Forms.RadioButton rbtnUSB;
         private System.Windows.Forms.TextBox txtMsg;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox txtUSB;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtIPView;
@@ -439,6 +446,10 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtLocal;
+        private System.Windows.Forms.Label lblUSB;
+        private System.Windows.Forms.TextBox txtUSB;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtDemandes;
     }
 }
 
