@@ -85,7 +85,7 @@ namespace Gestionnaire
 
             DataTable dt = new DataTable();
 
-            dt = gestionnaireDAO.recherchePermissionsTous();
+            dt = gestionnaireDAO.recherchePermissionsCompletes();
 
             if (dt != null)
             {
@@ -123,6 +123,53 @@ namespace Gestionnaire
             }
 
             return resultat;
+        }
+
+        public static List­<PersonneModel> ObtenirPersonneParCarte(string numero)
+        {
+            List<PersonneModel> personnes = null;
+
+            DataTable dt = new DataTable();
+
+            dt = gestionnaireDAO.recherchePersonnesParCarte(numero);
+
+            if (dt != null)
+            {
+                personnes = new List<PersonneModel>();
+                foreach (DataRow row in dt.Rows)
+                {
+                    PersonneModel enregistrement = new PersonneModel();
+
+                    enregistrement.Id = Int32.Parse(row["id"].ToString());
+                    enregistrement.CodeCarte = row["codeCarte"].ToString();
+                    enregistrement.Nom = row["nom"].ToString();
+                    enregistrement.Prenom = row["prenom"].ToString();
+
+                    personnes.Add(enregistrement);
+                }
+            }
+
+            return personnes;
+        }
+
+        public static bool AjouterPersonne(PersonneModel currentPersonne)
+        {
+            return gestionnaireDAO.ajouterPersonne(currentPersonne.Prenom, currentPersonne.Nom, currentPersonne.CodeCarte);
+        }
+
+        public static bool SupprimerPersonne(int id)
+        {
+            return gestionnaireDAO.supprimerPersonne(id);
+        }
+
+        public static bool AjouterLocal(LocalModel currentLocal)
+        {
+            return gestionnaireDAO.ajouterLocal(currentLocal.Numero, currentLocal.Description);
+        }
+
+        internal static bool SupprimerLocal(int id)
+        {
+            return gestionnaireDAO.supprimerLocal(id);
         }
     }
 }

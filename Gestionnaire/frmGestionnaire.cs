@@ -29,9 +29,18 @@ namespace Gestionnaire
 
         GestionnaireBUS.AccesTypes dernierAcces;
 
+        PersonneModel currentPersonne;
+        PermissionModel currentPermission;
+        LocalModel currentLocal;
+
+        Color invalidColor = Color.FromArgb(255, 128, 128);
+        Color defaultColor;
+
         public frmGestionnaire()
         {
             InitializeComponent();
+
+            defaultColor = txtCodeCarte.BackColor;
 
             tamponServeurReception = new byte[networkBufferSize];
             tamponServeurExpedition = new byte[1];
@@ -220,6 +229,9 @@ namespace Gestionnaire
             dgvLocaux.DataSource = GestionnaireBUS.ObtenirLocaux();
             dgvLocaux.Columns["id"].Visible = false;
 
+            cboLocaux.DataSource = dgvLocaux.DataSource;
+            cboLocaux.SelectedIndex = -1;
+
         }
 
         private void initPersonnes()
@@ -229,6 +241,9 @@ namespace Gestionnaire
 
             dgvPersonnes.DataSource = GestionnaireBUS.ObtenirPersonnes();
             dgvPersonnes.Columns["id"].Visible = false;
+
+            cboPersonnes.DataSource = dgvPersonnes.DataSource;
+            cboPersonnes.SelectedIndex = -1;
         }
 
         private void initPermissions()
@@ -238,26 +253,30 @@ namespace Gestionnaire
 
             dgvPermissions.DataSource = GestionnaireBUS.ObtenirPermissions();
             dgvPermissions.Columns["id"].Visible = false;
+            dgvPermissions.Columns["id_local"].Visible = false;
+            dgvPermissions.Columns["id_personne"].Visible = false;
+
+
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            string timeInMetric = DateTime.Now.Hour.ToString() + ((int)(DateTime.Now.Minute / 60.0 * 100.0)).ToString();
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    string timeInMetric = DateTime.Now.Hour.ToString() + ((int)(DateTime.Now.Minute / 60.0 * 100.0)).ToString();
 
-            switch (GestionnaireBUS.AAccess("0003870622", "1133", timeInMetric))
-            {
-                case GestionnaireBUS.AccesTypes.aucun:
-                    txtMsg.Text = "Aucun";
-                    break;
-                case GestionnaireBUS.AccesTypes.hors_plage:
-                    txtMsg.Text = "Hors plage";
-                    break;
-                case GestionnaireBUS.AccesTypes.ok:
-                    txtMsg.Text = "Accès";
-                    break;
-            }
-        }
+        //    switch (GestionnaireBUS.AAccess("0003870622", "1133", timeInMetric))
+        //    {
+        //        case GestionnaireBUS.AccesTypes.aucun:
+        //            txtMsg.Text = "Aucun";
+        //            break;
+        //        case GestionnaireBUS.AccesTypes.hors_plage:
+        //            txtMsg.Text = "Hors plage";
+        //            break;
+        //        case GestionnaireBUS.AccesTypes.ok:
+        //            txtMsg.Text = "Accès";
+        //            break;
+        //    }
+        //}
 
         private GestionnaireBUS.AccesTypes interrogerBD (string donnees)
         {
@@ -277,8 +296,149 @@ namespace Gestionnaire
             return resultat;
         }
 
-        private void label5_Click(object sender, EventArgs e)
+        private void dgvPersonnes_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            if (e.RowIndex == -1) return;
+
+            currentPersonne = ((List<PersonneModel>)dgvPersonnes.DataSource)[e.RowIndex];
+
+            txtPrenom.Text = currentPersonne.Prenom;
+            txtNom.Text = currentPersonne.Nom;
+            txtCodeCarte.Text = currentPersonne.CodeCarte;
+        }
+
+        private void btnPersonneAjouter_Click(object sender, EventArgs e)
+        {
+            if (txtCodeCarte.Text == "") {
+                txtCodeCarte.BackColor = invalidColor;   
+                return;
+            }
+
+            txtCodeCarte.BackColor = defaultColor;
+            
+            if (currentPersonne == null)
+            {
+                currentPersonne = new PersonneModel();
+            }
+
+            currentPersonne.CodeCarte = txtCodeCarte.Text;
+            currentPersonne.Prenom = txtPrenom.Text;
+            currentPersonne.Nom = txtNom.Text;
+
+            if (GestionnaireBUS.ObtenirPersonneParCarte(currentPersonne.CodeCarte).Count == 0)
+            {
+                if (!GestionnaireBUS.AjouterPersonne(currentPersonne))
+                {
+                    MessageBox.Show("Une erreur est survenue. Impossible d'ajouter la personne.", "Erreur");
+                    return;
+                }
+
+                initPersonnes();
+                
+
+            } else
+            {
+                MessageBox.Show("Ce numéro de carte est déjà utilisé.", "Erreur");
+            }
+        }
+
+        private void btnPersonneSupprimer_Click(object sender, EventArgs e)
+        {
+            if (currentPersonne == null)
+            {
+                MessageBox.Show("Veuillez sélectionner une personne de la liste.", "Erreur");
+                return;
+            }
+
+            if (!GestionnaireBUS.SupprimerPersonne(currentPersonne.Id))
+            {
+                MessageBox.Show("Une erreur est survenue lors de la tentative de suppression", "Erreur");
+                return;
+            }
+
+            initPersonnes();
+            initPermissions();
+        }
+
+        private void dgvLocaux_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.RowIndex == -1) return;
+
+            currentLocal = ((List<LocalModel>)dgvLocaux.DataSource)[e.RowIndex];
+
+            txtLocalNumero.Text = currentLocal.Numero;
+            txtLocalDescription.Text = currentLocal.Description;
+        }
+
+        private void btnLocalAjouter_Click(object sender, EventArgs e)
+        {
+            if (txtLocalNumero.Text == "")
+            {
+                txtLocalNumero.BackColor = invalidColor;
+                return;
+            }
+
+            txtLocalNumero.BackColor = defaultColor;
+
+            if (currentLocal == null)
+            {
+                currentLocal = new LocalModel();
+            }
+
+            currentLocal.Description = txtLocalDescription.Text;
+            currentLocal.Numero = txtLocalNumero.Text;
+
+            if (GestionnaireBUS.ObtenirLocauxParNumero(currentLocal.Numero).Count == 0 )
+            {
+                if (!GestionnaireBUS.AjouterLocal(currentLocal))
+                {
+                    
+                    MessageBox.Show("Une erreur est survenue. Impossible d'ajouter la personne.", "Erreur");
+                    return;
+                    
+                }
+
+                initLocaux();
+
+            } else
+            {
+                MessageBox.Show("Ce numéro de local est déjà attribué.", "Erreur");
+            }
+        }
+
+        private void btnLocalSupprimer_Click(object sender, EventArgs e)
+        {
+            if (currentLocal == null)
+            {
+                MessageBox.Show("Veuillez sélectionner un local de la liste.", "Erreur");
+                return;
+            }
+
+            if (!GestionnaireBUS.SupprimerLocal(currentLocal.Id))
+            {
+                MessageBox.Show("Une erreur est survenue lors de la tentative de suppression", "Erreur");
+                return;
+            }
+
+            initLocaux();
+            initPermissions();
+        }
+
+        private void btnPermissionAjouter_Click(object sender, EventArgs e)
+        {
+            if (cboPersonnes.SelectedValue != null)
+                MessageBox.Show(((PersonneModel)cboPersonnes.SelectedItem).Id.ToString());
+        }
+
+        private void dgvPermissions_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.RowIndex == -1) return;
+
+            currentPermission = ((List<PermissionModel>)dgvPermissions.DataSource)[e.RowIndex];
+
+            
+            txtPlageDebut.Text = currentPermission.PlageDebut;
+            txtPlageFin.Text = currentPermission.PlageFin;
 
         }
     }

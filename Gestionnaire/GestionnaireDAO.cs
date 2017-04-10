@@ -107,6 +107,20 @@ namespace Gestionnaire
             return conn.executeSelectQuery(query, null);
         }
 
+        public DataTable recherchePermissionsCompletes()
+        {
+            string query = string.Format(
+               "SELECT perm.id_personne, perm.id_local, prs.codeCarte, prs.nom & \", \" & prs.prenom as personne, perm.plageDebut, perm.plageFin, loc.numero as numeroLocal, loc.description " +
+               "FROM ((Permissions as perm " +
+               "INNER JOIN Personnes as prs ON prs.id = perm.id_personne) " +
+               "INNER JOIN Locaux as loc ON loc.id = perm.id_local) "
+               );
+
+
+
+            return conn.executeSelectQuery(query, null);
+        }
+
         /// <summary>
         /// Recherche les enregistrements de la table Permissions
         /// </summary>
@@ -118,6 +132,75 @@ namespace Gestionnaire
                "FROM [Permissions]");
 
             return conn.executeSelectQuery(query, null);
+        }
+
+        public bool ajouterPersonne (string prenom, string nom, string codeCarte)
+        {
+            string query = string.Format(
+                "INSERT INTO Personnes (prenom, nom, codeCarte) " +
+                "VALUES (@prenom, @nom, @codeCarte)"
+                );
+
+            OleDbParameter[] sqlParameters = new OleDbParameter[3];
+
+            sqlParameters[0] = new OleDbParameter("@prenom", OleDbType.WChar);
+            sqlParameters[0].Value = Convert.ToString(prenom);
+
+            sqlParameters[1] = new OleDbParameter("@nom", OleDbType.WChar);
+            sqlParameters[1].Value = Convert.ToString(nom);
+
+            sqlParameters[2] = new OleDbParameter("@codeCarte", OleDbType.WChar);
+            sqlParameters[2].Value = Convert.ToString(codeCarte);
+
+            return conn.executeInsertQuery(query, sqlParameters);
+        }
+
+        internal bool supprimerLocal(int id)
+        {
+            string query = string.Format(
+                "DELETE FROM Locaux " +
+                "WHERE id = @id"
+                );
+
+            OleDbParameter[] sqlParameters = new OleDbParameter[1];
+
+            sqlParameters[0] = new OleDbParameter("@id", OleDbType.Integer);
+            sqlParameters[0].Value = Convert.ToString(id);
+
+            return conn.executeDeleteQuery(query, sqlParameters);
+        }
+
+        internal bool ajouterLocal(string numero, string description)
+        {
+            string query = string.Format(
+                "INSERT INTO Locaux (numero, description) " +
+                "VALUES (@numero, @description)"
+                );
+
+            OleDbParameter[] sqlParameters = new OleDbParameter[2];
+
+            sqlParameters[0] = new OleDbParameter("@numero", OleDbType.WChar);
+            sqlParameters[0].Value = Convert.ToString(numero);
+
+            sqlParameters[1] = new OleDbParameter("@description", OleDbType.WChar);
+            sqlParameters[1].Value = Convert.ToString(description);
+            
+            return conn.executeInsertQuery(query, sqlParameters);
+        }
+
+        public bool supprimerPersonne(int id)
+        {
+            string query = string.Format(
+                "DELETE FROM Personnes " +
+                "WHERE id = @id"
+                );
+
+            OleDbParameter[] sqlParameters = new OleDbParameter[1];
+
+            sqlParameters[0] = new OleDbParameter("@id", OleDbType.Integer);
+            sqlParameters[0].Value = Convert.ToString(id);
+
+            return conn.executeDeleteQuery(query, sqlParameters);
         }
 
     }

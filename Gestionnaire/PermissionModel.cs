@@ -14,6 +14,9 @@ namespace Gestionnaire
         public int Id { get;}
         public string Id_personne { get; set; }
         public string Id_local { get; set; }
+        public string Personne { get; set; }
+
+        public string NumeroLocal { get; set; }
 
         public string PlageDebut
         {
