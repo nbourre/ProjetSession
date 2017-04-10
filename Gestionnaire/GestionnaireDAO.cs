@@ -44,7 +44,8 @@ namespace Gestionnaire
         {
             string query = string.Format(
                "SELECT * " +
-               "FROM [Locaux] ");
+               "FROM [Locaux] " +
+               "ORDER BY numero");
 
             return conn.executeSelectQuery(query, null);
         }
@@ -102,7 +103,8 @@ namespace Gestionnaire
         {
             string query = string.Format(
                "SELECT * " +
-               "FROM [Personnes] ");
+               "FROM [Personnes] " +
+               "ORDER BY nom");
 
             return conn.executeSelectQuery(query, null);
         }
@@ -110,7 +112,7 @@ namespace Gestionnaire
         public DataTable recherchePermissionsCompletes()
         {
             string query = string.Format(
-               "SELECT perm.id_personne, perm.id_local, prs.codeCarte, prs.nom & \", \" & prs.prenom as personne, perm.plageDebut, perm.plageFin, loc.numero as numeroLocal, loc.description " +
+               "SELECT perm.id, perm.id_personne, perm.id_local, prs.codeCarte, prs.nom & \", \" & prs.prenom as personne, perm.plageDebut, perm.plageFin, loc.numero as numeroLocal, loc.description " +
                "FROM ((Permissions as perm " +
                "INNER JOIN Personnes as prs ON prs.id = perm.id_personne) " +
                "INNER JOIN Locaux as loc ON loc.id = perm.id_local) "
@@ -151,6 +153,45 @@ namespace Gestionnaire
 
             sqlParameters[2] = new OleDbParameter("@codeCarte", OleDbType.WChar);
             sqlParameters[2].Value = Convert.ToString(codeCarte);
+
+            return conn.executeInsertQuery(query, sqlParameters);
+        }
+
+        internal bool supprimerPermission(int id)
+        {
+            string query = string.Format(
+                "DELETE FROM Permissions " +
+                "WHERE id = @id"
+                );
+
+            OleDbParameter[] sqlParameters = new OleDbParameter[1];
+
+            sqlParameters[0] = new OleDbParameter("@id", OleDbType.Integer);
+            sqlParameters[0].Value = Convert.ToString(id);
+
+            return conn.executeDeleteQuery(query, sqlParameters);
+        }
+
+        internal bool ajouterPermission(int id_local, int id_personne, string plageDebut, string plageFin)
+        {
+            string query = string.Format(
+             "INSERT INTO Permissions (id_local, id_personne, plageDebut, plageFin) " +
+             "VALUES (@id_local, @id_personne, @plageDebut, @plageFin)"
+             );
+
+            OleDbParameter[] sqlParameters = new OleDbParameter[4];
+
+            sqlParameters[0] = new OleDbParameter("@id_local", OleDbType.Integer);
+            sqlParameters[0].Value = Convert.ToString(id_local);
+
+            sqlParameters[1] = new OleDbParameter("@id_personne", OleDbType.Integer);
+            sqlParameters[1].Value = Convert.ToString(id_personne);
+
+            sqlParameters[2] = new OleDbParameter("@plageDebut", OleDbType.WChar);
+            sqlParameters[2].Value = Convert.ToString(plageDebut);
+
+            sqlParameters[3] = new OleDbParameter("@plageFin", OleDbType.WChar);
+            sqlParameters[3].Value = Convert.ToString(plageFin);
 
             return conn.executeInsertQuery(query, sqlParameters);
         }

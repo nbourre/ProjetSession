@@ -171,5 +171,15 @@ namespace Gestionnaire
         {
             return gestionnaireDAO.supprimerLocal(id);
         }
+
+        internal static bool AjouterPermission(PermissionModel currentPermission)
+        {
+            return gestionnaireDAO.ajouterPermission(currentPermission.Id_local, currentPermission.Id_personne, currentPermission.PlageDebut, currentPermission.PlageFin);
+        }
+
+        internal static bool SupprimerPermission(int id)
+        {
+            return gestionnaireDAO.supprimerPermission(id);
+        }
     }
 }

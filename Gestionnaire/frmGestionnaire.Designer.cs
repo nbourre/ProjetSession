@@ -494,6 +494,7 @@
             this.btnPermissionSupprimer.TabIndex = 8;
             this.btnPermissionSupprimer.Text = "Supprimer";
             this.btnPermissionSupprimer.UseVisualStyleBackColor = true;
+            this.btnPermissionSupprimer.Click += new System.EventHandler(this.btnPermissionSupprimer_Click);
             // 
             // label14
             // 
@@ -530,6 +531,7 @@
             this.dgvPermissions.Size = new System.Drawing.Size(596, 150);
             this.dgvPermissions.TabIndex = 2;
             this.dgvPermissions.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvPermissions_CellMouseDoubleClick);
+            this.dgvPermissions.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvPermissions_ColumnHeaderMouseClick);
             // 
             // tabConfig
             // 

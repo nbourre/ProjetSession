@@ -11,9 +11,9 @@ namespace Gestionnaire
         private int _plageDebut;
         private int _plageFin;
 
-        public int Id { get;}
-        public string Id_personne { get; set; }
-        public string Id_local { get; set; }
+        public int Id { get; set; }
+        public int Id_personne { get; set; }
+        public int Id_local { get; set; }
         public string Personne { get; set; }
 
         public string NumeroLocal { get; set; }

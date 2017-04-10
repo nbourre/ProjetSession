@@ -426,8 +426,50 @@ namespace Gestionnaire
 
         private void btnPermissionAjouter_Click(object sender, EventArgs e)
         {
-            if (cboPersonnes.SelectedValue != null)
-                MessageBox.Show(((PersonneModel)cboPersonnes.SelectedItem).Id.ToString());
+            if (cboPersonnes.SelectedValue == null)
+            {
+                cboPersonnes.BackColor = invalidColor;
+                return;
+            }
+
+            if (cboLocaux.SelectedValue == null)
+            {
+                cboLocaux.BackColor = invalidColor;
+                return;
+            }
+
+            if (txtPlageDebut.Text == "")
+            {
+                txtPlageDebut.BackColor = invalidColor;
+                return;
+            }
+
+            if (txtPlageFin.Text == "")
+            {
+                txtPlageFin.BackColor = invalidColor;
+                return;
+            }
+
+            txtPlageFin.BackColor = txtPlageDebut.BackColor = 
+                cboPersonnes.BackColor = cboLocaux.BackColor = defaultColor;
+
+            if (currentPermission == null)
+            {
+                currentPermission = new PermissionModel();
+            }
+
+            currentPermission.Id_local = ((LocalModel)cboLocaux.SelectedItem).Id;
+            currentPermission.Id_personne = ((PersonneModel)cboPersonnes.SelectedItem).Id;
+            currentPermission.PlageDebut = int.Parse(txtPlageDebut.Text).ToString();
+            currentPermission.PlageFin = int.Parse(txtPlageFin.Text).ToString();
+
+            if (!GestionnaireBUS.AjouterPermission (currentPermission))
+            {
+                MessageBox.Show("Il semble y avoir eu un problème lors de la création de l'enregistrement.");
+                return;
+            }
+
+            initPermissions();
         }
 
         private void dgvPermissions_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -435,10 +477,52 @@ namespace Gestionnaire
             if (e.RowIndex == -1) return;
 
             currentPermission = ((List<PermissionModel>)dgvPermissions.DataSource)[e.RowIndex];
-
             
             txtPlageDebut.Text = currentPermission.PlageDebut;
             txtPlageFin.Text = currentPermission.PlageFin;
+
+
+            bool found = false;
+
+            for (int i = 0; (i < cboLocaux.Items.Count) && !found; i++)
+            {
+                if (((LocalModel) cboLocaux.Items[i]).Id == currentPermission.Id_local)
+                {
+                    cboLocaux.SelectedIndex = i;
+                    found = true;
+                }
+            }
+
+            found = false;
+            for (int i = 0; (i < cboPersonnes.Items.Count) && !found; i++)
+            {
+                if (((PersonneModel)cboPersonnes.Items[i]).Id == currentPermission.Id_personne)
+                {
+                    cboPersonnes.SelectedIndex = i;
+                    found = true;
+                }
+            }
+        }
+
+        private void btnPermissionSupprimer_Click(object sender, EventArgs e)
+        {
+            if (currentPermission == null)
+            {
+                MessageBox.Show("Veuillez sélectionner une permission de la liste.", "Erreur");
+                return;
+            }
+
+            if (!GestionnaireBUS.SupprimerPermission(currentPermission.Id))
+            {
+                MessageBox.Show("Une erreur est survenue lors de la tentative de suppression", "Erreur");
+                return;
+            }
+
+            initPermissions();
+        }
+
+        private void dgvPermissions_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
 
         }
     }
