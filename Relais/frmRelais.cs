@@ -8,6 +8,7 @@ using System.Text;
 using System.Linq;
 using System.IO;
 using System.Drawing.Imaging;
+using Gestionnaire;
 
 namespace Relais
 {
@@ -40,6 +41,8 @@ namespace Relais
         string cardId = "";
         string localNumber = "";
 
+        bool camPresent = true;
+
         public frmRelais()
         {
             InitializeComponent();
@@ -54,6 +57,7 @@ namespace Relais
             lblUSB.DataBindings.Add(new Binding("Enabled", rbtnUSB, "Checked"));
             txtUSB.DataBindings.Add(new Binding("Enabled", rbtnUSB, "Checked"));
 
+            initTooltips();
             initReseau();
             initPortSerie();
             initCamera();
@@ -69,8 +73,18 @@ namespace Relais
 
         private void tmrCam_Tick(object sender, EventArgs e)
         {
+            
+
             tmrCam.Enabled = false;
-            cap.Read(frame);
+
+            if (!camPresent)
+            {
+                frame = Mat.Zeros(320, 240, MatType.CV_8UC3);
+            }
+            else
+            {
+                cap.Read(frame);
+            }
 
 
             matToPictureBox(pbCamera, frame);
@@ -153,16 +167,22 @@ namespace Relais
 
         private void initCamera()
         {
-            if (!cap.Read(frame))
+            try { 
+                if (!cap.Read(frame))
+                {
+                    txtDataRead.Text = "Erreur de capture";
+                    return;
+                }
+
+                pbCamera.Width = frame.Width;
+                pbCamera.Height = frame.Height;
+            
+                pbCamera.Image = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(frame);
+            } catch (Exception e)
             {
-                txtDataRead.Text = "Erreur de capture";
-                return;
+                MessageBox.Show("Il semble y avoir un problème avec la caméra.\r\n" + e.Message, "Erreur");
+                camPresent = false;
             }
-
-            pbCamera.Width = frame.Width;
-            pbCamera.Height = frame.Height;
-
-            pbCamera.Image = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(frame);
             
             tmrCam.Enabled = true;
         }
@@ -194,9 +214,11 @@ namespace Relais
 
                     endPoint = new IPEndPoint(adresseIP, int.Parse(txtPort.Text));
 
+                    
+
                 } catch (FormatException ex)
                 {
-                    MessageBox.Show("Erreur", ex.Message);
+                    MessageBox.Show(ex.Message, "Erreur");
                 }
             }
         }
@@ -211,22 +233,29 @@ namespace Relais
             adresseIP = IPAddress.Parse(txtIPServeur.Text);
             endPoint = new IPEndPoint(adresseIP, int.Parse(txtPort.Text));
 
-            socketEnvoi.Connect(endPoint);
+            try {
+                socketEnvoi.Connect(endPoint);
+
+                //socketEnvoi.Send(message.Data);
+
+                // Envoyer le local et la clé
+                socketEnvoi.Send(trameReseau);
+
+                // Attendre la réponse du serveur
+                socketEnvoi.Receive(reponse);
+
+                if (camPresent)
+                // Envoyer l'image
+                    socketEnvoi.Send(ms.ToArray());
+
+                socketEnvoi.Dispose();
+
+                donneesReseauPretes = true;
+            } catch (Exception e)
+            {
+                MessageBox.Show("Il semble y avoir eu une erreur avec la communication.\r\n" + e.Message, "Erreur");
+            }
             
-            //socketEnvoi.Send(message.Data);
-
-            // Envoyer le local et la clé
-            socketEnvoi.Send(trameReseau);
-
-            // Attendre la réponse du serveur
-            socketEnvoi.Receive(reponse);
-
-            // Envoyer l'image
-            socketEnvoi.Send(ms.ToArray());
-
-            socketEnvoi.Dispose();
-
-            donneesReseauPretes = true;
             
         }
 
@@ -264,6 +293,14 @@ namespace Relais
                     {
                         pbCamera.Image.Save(ms, ImageFormat.Bmp);
                         ms.Position = 0;
+
+                        string filename = AppDomain.CurrentDomain.BaseDirectory + DateTime.Now.ToString("yyyyMMdd_hhmmss")  + ".jpg";
+
+                        pbCamera.Image.Save(filename, ImageFormat.Jpeg);
+
+                        pbLastCapture.Image = pbCamera.Image = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(new Mat(filename)) ;
+
+                        txtMsg.Text += "Image sauvegardée : " + filename + "\r\n";
                     }
 
                     message = MessageSerializer.Serialize(new Snapshot(localNumber, cardId, pbCamera.Image));
@@ -286,9 +323,11 @@ namespace Relais
             return cleaned;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void initTooltips()
         {
-            
+            tipAcquisition.SetToolTip(grboxAcquisition, "Pour fin de test, le mode USB permet de connecter un module USB au lieu de UART pour la lecture des cartes. Il suffira d'avoir le focus sur le champ \"Test de lecture\"");
+            tipTestUSB.SetToolTip(txtUSB, "Entrez le code à tester et appuyer sur Entrée");
         }
+
     }
 }

@@ -116,6 +116,7 @@ namespace Gestionnaire
                     tamponServeurExpedition[0] = (byte)dernierAcces;         
                     stream.Write(tamponServeurExpedition, 0, 1);
 
+                    
                     // Attendre l'image
                     stream.Read(tamponImage, 0, imageBufferSize);
                     
@@ -149,7 +150,12 @@ namespace Gestionnaire
                 {
                     MemoryStream ms = new MemoryStream(tamponImage);
 
-                    pbRelais.Image = Image.FromStream(ms);
+                    try {
+                        pbRelais.Image = Image.FromStream(ms);
+                    } catch (Exception ex)
+                    {
+                        pbRelais.Image = Helper.DrawFilledRectangle(640, 480);
+                    }
                 }
 
                 switch(dernierAcces)

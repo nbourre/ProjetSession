@@ -39,11 +39,15 @@
             this.label7 = new System.Windows.Forms.Label();
             this.txtMsg = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.lblDataRead = new System.Windows.Forms.Label();
+            this.txtDemandes = new System.Windows.Forms.TextBox();
             this.txtDataRead = new System.Windows.Forms.TextBox();
             this.tabCamera = new System.Windows.Forms.TabPage();
             this.pbCamera = new System.Windows.Forms.PictureBox();
             this.tabConfig = new System.Windows.Forms.TabPage();
+            this.lblUSB = new System.Windows.Forms.Label();
+            this.txtUSB = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txtLocal = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -52,16 +56,15 @@
             this.btnConnexion = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.txtPort = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.grboxAcquisition = new System.Windows.Forms.GroupBox();
             this.rbtnSerie = new System.Windows.Forms.RadioButton();
             this.rbtnUSB = new System.Windows.Forms.RadioButton();
             this.spc = new gei1076_tools.SerialPortConfigurator();
             this.tmrSerie = new System.Windows.Forms.Timer(this.components);
             this.tmrMain = new System.Windows.Forms.Timer(this.components);
-            this.lblUSB = new System.Windows.Forms.Label();
-            this.txtUSB = new System.Windows.Forms.TextBox();
-            this.txtDemandes = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
+            this.pbLastCapture = new System.Windows.Forms.PictureBox();
+            this.tipAcquisition = new System.Windows.Forms.ToolTip(this.components);
+            this.tipTestUSB = new System.Windows.Forms.ToolTip(this.components);
             this.tabMain.SuspendLayout();
             this.tabPrincipale.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -69,7 +72,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pbCamera)).BeginInit();
             this.tabConfig.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.grboxAcquisition.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLastCapture)).BeginInit();
             this.SuspendLayout();
             // 
             // tmrCam
@@ -92,6 +96,7 @@
             // 
             // tabPrincipale
             // 
+            this.tabPrincipale.Controls.Add(this.pbLastCapture);
             this.tabPrincipale.Controls.Add(this.groupBox3);
             this.tabPrincipale.Controls.Add(this.txtMsg);
             this.tabPrincipale.Controls.Add(this.label3);
@@ -161,7 +166,7 @@
             this.txtMsg.Location = new System.Drawing.Point(3, 223);
             this.txtMsg.Multiline = true;
             this.txtMsg.Name = "txtMsg";
-            this.txtMsg.Size = new System.Drawing.Size(237, 178);
+            this.txtMsg.Size = new System.Drawing.Size(480, 178);
             this.txtMsg.TabIndex = 5;
             // 
             // label3
@@ -173,6 +178,15 @@
             this.label3.TabIndex = 4;
             this.label3.Text = "Message";
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(243, 6);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(98, 13);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Demandes d\'accès";
+            // 
             // lblDataRead
             // 
             this.lblDataRead.AutoSize = true;
@@ -181,6 +195,14 @@
             this.lblDataRead.Size = new System.Drawing.Size(106, 13);
             this.lblDataRead.TabIndex = 4;
             this.lblDataRead.Text = "Dernières cartes lues";
+            // 
+            // txtDemandes
+            // 
+            this.txtDemandes.Location = new System.Drawing.Point(246, 22);
+            this.txtDemandes.Multiline = true;
+            this.txtDemandes.Name = "txtDemandes";
+            this.txtDemandes.Size = new System.Drawing.Size(237, 178);
+            this.txtDemandes.TabIndex = 3;
             // 
             // txtDataRead
             // 
@@ -216,7 +238,7 @@
             this.tabConfig.Controls.Add(this.label5);
             this.tabConfig.Controls.Add(this.txtLocal);
             this.tabConfig.Controls.Add(this.groupBox2);
-            this.tabConfig.Controls.Add(this.groupBox1);
+            this.tabConfig.Controls.Add(this.grboxAcquisition);
             this.tabConfig.Controls.Add(this.spc);
             this.tabConfig.Location = new System.Drawing.Point(4, 22);
             this.tabConfig.Name = "tabConfig";
@@ -225,6 +247,24 @@
             this.tabConfig.TabIndex = 1;
             this.tabConfig.Text = "Configuration";
             this.tabConfig.UseVisualStyleBackColor = true;
+            // 
+            // lblUSB
+            // 
+            this.lblUSB.AutoSize = true;
+            this.lblUSB.Location = new System.Drawing.Point(53, 181);
+            this.lblUSB.Name = "lblUSB";
+            this.lblUSB.Size = new System.Drawing.Size(94, 13);
+            this.lblUSB.TabIndex = 14;
+            this.lblUSB.Text = "Test lecture USB :";
+            // 
+            // txtUSB
+            // 
+            this.txtUSB.Location = new System.Drawing.Point(153, 178);
+            this.txtUSB.Multiline = true;
+            this.txtUSB.Name = "txtUSB";
+            this.txtUSB.Size = new System.Drawing.Size(160, 20);
+            this.txtUSB.TabIndex = 13;
+            this.txtUSB.TextChanged += new System.EventHandler(this.txtUSB_TextChanged);
             // 
             // label5
             // 
@@ -301,16 +341,16 @@
             this.txtPort.TabIndex = 4;
             this.txtPort.Text = "8080";
             // 
-            // groupBox1
+            // grboxAcquisition
             // 
-            this.groupBox1.Controls.Add(this.rbtnSerie);
-            this.groupBox1.Controls.Add(this.rbtnUSB);
-            this.groupBox1.Location = new System.Drawing.Point(6, 6);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(155, 67);
-            this.groupBox1.TabIndex = 8;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Méthode d\'acquisition";
+            this.grboxAcquisition.Controls.Add(this.rbtnSerie);
+            this.grboxAcquisition.Controls.Add(this.rbtnUSB);
+            this.grboxAcquisition.Location = new System.Drawing.Point(6, 6);
+            this.grboxAcquisition.Name = "grboxAcquisition";
+            this.grboxAcquisition.Size = new System.Drawing.Size(155, 67);
+            this.grboxAcquisition.TabIndex = 8;
+            this.grboxAcquisition.TabStop = false;
+            this.grboxAcquisition.Text = "Méthode d\'acquisition";
             // 
             // rbtnSerie
             // 
@@ -353,40 +393,13 @@
             this.tmrMain.Interval = 250;
             this.tmrMain.Tick += new System.EventHandler(this.tmrMain_Tick);
             // 
-            // lblUSB
+            // pbLastCapture
             // 
-            this.lblUSB.AutoSize = true;
-            this.lblUSB.Location = new System.Drawing.Point(53, 181);
-            this.lblUSB.Name = "lblUSB";
-            this.lblUSB.Size = new System.Drawing.Size(94, 13);
-            this.lblUSB.TabIndex = 14;
-            this.lblUSB.Text = "Test lecture USB :";
-            // 
-            // txtUSB
-            // 
-            this.txtUSB.Location = new System.Drawing.Point(153, 178);
-            this.txtUSB.Multiline = true;
-            this.txtUSB.Name = "txtUSB";
-            this.txtUSB.Size = new System.Drawing.Size(160, 20);
-            this.txtUSB.TabIndex = 13;
-            this.txtUSB.TextChanged += new System.EventHandler(this.txtUSB_TextChanged);
-            // 
-            // txtDemandes
-            // 
-            this.txtDemandes.Location = new System.Drawing.Point(246, 22);
-            this.txtDemandes.Multiline = true;
-            this.txtDemandes.Name = "txtDemandes";
-            this.txtDemandes.Size = new System.Drawing.Size(237, 178);
-            this.txtDemandes.TabIndex = 3;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(243, 6);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(98, 13);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "Demandes d\'accès";
+            this.pbLastCapture.Location = new System.Drawing.Point(519, 223);
+            this.pbLastCapture.Name = "pbLastCapture";
+            this.pbLastCapture.Size = new System.Drawing.Size(202, 178);
+            this.pbLastCapture.TabIndex = 15;
+            this.pbLastCapture.TabStop = false;
             // 
             // frmRelais
             // 
@@ -409,8 +422,9 @@
             this.tabConfig.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.grboxAcquisition.ResumeLayout(false);
+            this.grboxAcquisition.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLastCapture)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -434,7 +448,7 @@
         private System.Windows.Forms.TextBox txtDataRead;
         private gei1076_tools.SerialPortConfigurator spc;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox grboxAcquisition;
         private System.Windows.Forms.RadioButton rbtnSerie;
         private System.Windows.Forms.RadioButton rbtnUSB;
         private System.Windows.Forms.TextBox txtMsg;
@@ -450,6 +464,9 @@
         private System.Windows.Forms.TextBox txtUSB;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtDemandes;
+        private System.Windows.Forms.PictureBox pbLastCapture;
+        private System.Windows.Forms.ToolTip tipAcquisition;
+        private System.Windows.Forms.ToolTip tipTestUSB;
     }
 }
 

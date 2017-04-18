@@ -72,6 +72,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Gestionnaire\Helper.cs">
+      <Link>Helper.cs</Link>
+    </Compile>
     <Compile Include="frmRelais.cs">
       <SubType>Form</SubType>
     </Compile>
