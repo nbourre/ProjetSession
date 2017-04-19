@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace Gestionnaire
 {
@@ -30,7 +31,13 @@ namespace Gestionnaire
             if (conn.State == ConnectionState.Closed||
                 conn.State == ConnectionState.Broken)
             {
-                conn.Open();
+                try
+                {
+                    conn.Open();
+                } catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
 
             return conn;
