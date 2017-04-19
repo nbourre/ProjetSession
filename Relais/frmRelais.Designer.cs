@@ -47,6 +47,8 @@
             this.tabCamera = new System.Windows.Forms.TabPage();
             this.pbCamera = new System.Windows.Forms.PictureBox();
             this.tabConfig = new System.Windows.Forms.TabPage();
+            this.btnJaune = new System.Windows.Forms.Button();
+            this.btnVert = new System.Windows.Forms.Button();
             this.lblUSB = new System.Windows.Forms.Label();
             this.txtUSB = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -65,6 +67,8 @@
             this.tmrMain = new System.Windows.Forms.Timer(this.components);
             this.tipAcquisition = new System.Windows.Forms.ToolTip(this.components);
             this.tipTestUSB = new System.Windows.Forms.ToolTip(this.components);
+            this.btnRouge = new System.Windows.Forms.Button();
+            this.btnAucune = new System.Windows.Forms.Button();
             this.tabMain.SuspendLayout();
             this.tabPrincipale.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbLastCapture)).BeginInit();
@@ -234,14 +238,22 @@
             // 
             // pbCamera
             // 
+            this.pbCamera.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pbCamera.Location = new System.Drawing.Point(6, 6);
             this.pbCamera.Name = "pbCamera";
             this.pbCamera.Size = new System.Drawing.Size(640, 480);
+            this.pbCamera.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pbCamera.TabIndex = 3;
             this.pbCamera.TabStop = false;
             // 
             // tabConfig
             // 
+            this.tabConfig.Controls.Add(this.btnAucune);
+            this.tabConfig.Controls.Add(this.btnRouge);
+            this.tabConfig.Controls.Add(this.btnJaune);
+            this.tabConfig.Controls.Add(this.btnVert);
             this.tabConfig.Controls.Add(this.lblUSB);
             this.tabConfig.Controls.Add(this.txtUSB);
             this.tabConfig.Controls.Add(this.label5);
@@ -256,6 +268,26 @@
             this.tabConfig.TabIndex = 1;
             this.tabConfig.Text = "Configuration";
             this.tabConfig.UseVisualStyleBackColor = true;
+            // 
+            // btnJaune
+            // 
+            this.btnJaune.Location = new System.Drawing.Point(597, 137);
+            this.btnJaune.Name = "btnJaune";
+            this.btnJaune.Size = new System.Drawing.Size(75, 23);
+            this.btnJaune.TabIndex = 16;
+            this.btnJaune.Text = "Jaune";
+            this.btnJaune.UseVisualStyleBackColor = true;
+            this.btnJaune.Click += new System.EventHandler(this.btnJaune_Click);
+            // 
+            // btnVert
+            // 
+            this.btnVert.Location = new System.Drawing.Point(597, 108);
+            this.btnVert.Name = "btnVert";
+            this.btnVert.Size = new System.Drawing.Size(75, 23);
+            this.btnVert.TabIndex = 15;
+            this.btnVert.Text = "Vert";
+            this.btnVert.UseVisualStyleBackColor = true;
+            this.btnVert.Click += new System.EventHandler(this.btnVert_Click);
             // 
             // lblUSB
             // 
@@ -402,6 +434,26 @@
             this.tmrMain.Interval = 250;
             this.tmrMain.Tick += new System.EventHandler(this.tmrMain_Tick);
             // 
+            // btnRouge
+            // 
+            this.btnRouge.Location = new System.Drawing.Point(597, 166);
+            this.btnRouge.Name = "btnRouge";
+            this.btnRouge.Size = new System.Drawing.Size(75, 23);
+            this.btnRouge.TabIndex = 17;
+            this.btnRouge.Text = "Rouge";
+            this.btnRouge.UseVisualStyleBackColor = true;
+            this.btnRouge.Click += new System.EventHandler(this.btnRouge_Click);
+            // 
+            // btnAucune
+            // 
+            this.btnAucune.Location = new System.Drawing.Point(678, 137);
+            this.btnAucune.Name = "btnAucune";
+            this.btnAucune.Size = new System.Drawing.Size(75, 23);
+            this.btnAucune.TabIndex = 18;
+            this.btnAucune.Text = "Aucune";
+            this.btnAucune.UseVisualStyleBackColor = true;
+            this.btnAucune.Click += new System.EventHandler(this.btnAucune_Click);
+            // 
             // frmRelais
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -419,6 +471,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.tabCamera.ResumeLayout(false);
+            this.tabCamera.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbCamera)).EndInit();
             this.tabConfig.ResumeLayout(false);
             this.tabConfig.PerformLayout();
@@ -468,6 +521,10 @@
         private System.Windows.Forms.PictureBox pbLastCapture;
         private System.Windows.Forms.ToolTip tipAcquisition;
         private System.Windows.Forms.ToolTip tipTestUSB;
+        private System.Windows.Forms.Button btnVert;
+        private System.Windows.Forms.Button btnJaune;
+        private System.Windows.Forms.Button btnRouge;
+        private System.Windows.Forms.Button btnAucune;
     }
 }
 

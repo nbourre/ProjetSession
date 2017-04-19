@@ -9,6 +9,7 @@ using System.Linq;
 using System.IO;
 using System.Drawing.Imaging;
 using Gestionnaire;
+using System.Text.RegularExpressions;
 
 namespace Relais
 {
@@ -43,6 +44,12 @@ namespace Relais
 
         bool camPresent = true;
 
+        private const int LED_ETEINDRE = 255;
+        private const int LED_ROUGE = 0;
+        private const int LED_JAUNE = 1;
+        private const int LED_VERT = 2;
+        
+
         public frmRelais()
         {
             InitializeComponent();
@@ -57,11 +64,18 @@ namespace Relais
             lblUSB.DataBindings.Add(new Binding("Enabled", rbtnUSB, "Checked"));
             txtUSB.DataBindings.Add(new Binding("Enabled", rbtnUSB, "Checked"));
 
+            
+
             initTooltips();
             initReseau();
             initPortSerie();
             initCamera();
+            
 
+            btnVert.DataBindings.Add(new Binding("Enabled", ps, "Ouvert"));
+            btnJaune.DataBindings.Add(new Binding("Enabled", ps, "Ouvert"));
+            btnRouge.DataBindings.Add(new Binding("Enabled", ps, "Ouvert"));
+            btnAucune.DataBindings.Add(new Binding("Enabled", ps, "Ouvert"));
         }
 
 
@@ -114,6 +128,9 @@ namespace Relais
             tmrSerie.Enabled = true;
         }
 
+        int accumulateur = 0;
+        bool decompte = false;
+
         private void tmrMain_Tick(object sender, EventArgs e)
         {
             tmrMain.Enabled = false;
@@ -133,6 +150,8 @@ namespace Relais
                 donneesSeriePretes = false;
             }
 
+
+            // Données reçu du gestionnaire
             if (donneesReseauPretes)
             {
                 StringBuilder sb = new StringBuilder();
@@ -158,9 +177,24 @@ namespace Relais
                 txtDemandes.Text = txtDemandes.Text.Insert(0, sb.ToString());
 
                 // Écriture au port série
-                ps.EcrireOctet(reponse[0]);
+                ecrireSerie(reponse[0]);
+                
 
                 donneesReseauPretes = false;
+            }
+
+
+            if (decompte)
+            {
+                accumulateur += 1;
+
+                if (accumulateur > 12)
+                {
+                    accumulateur = 0;
+                    decompte = false;
+
+                    ecrireSerie(LED_ETEINDRE);
+                }
             }
 
             tmrMain.Enabled = true;
@@ -319,7 +353,11 @@ namespace Relais
         {
             if (string.IsNullOrEmpty(cardId)) return cardId;
 
-            string cleaned = new string(cardId.Where(char.IsDigit).ToArray());
+            
+            string cleaned = Regex.Replace(cardId, @"[^\da-fA-F]", "");
+            
+
+            //string cleaned = new string(cardId.Where(char.IsDigit).ToArray());
 
             return cleaned;
         }
@@ -330,5 +368,32 @@ namespace Relais
             tipTestUSB.SetToolTip(txtUSB, "Entrez le code à tester et appuyer sur Entrée");
         }
 
+        private void btnVert_Click(object sender, EventArgs e)
+        {
+            ecrireSerie(LED_VERT);
+        }
+
+        private void btnJaune_Click(object sender, EventArgs e)
+        {
+            ecrireSerie(LED_JAUNE);
+        }
+
+        private void btnRouge_Click(object sender, EventArgs e)
+        {
+            ecrireSerie(LED_ROUGE);
+        }
+
+        private void btnAucune_Click(object sender, EventArgs e)
+        {
+            ecrireSerie(LED_ETEINDRE);
+        }
+
+        private void ecrireSerie (byte valeur)
+        {
+            ps.EcrireOctet(valeur);
+
+            if (valeur != LED_ETEINDRE)
+                decompte = true;
+        }
     }
 }
