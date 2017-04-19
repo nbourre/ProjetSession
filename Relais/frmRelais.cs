@@ -127,8 +127,9 @@ namespace Relais
                     txtDataRead.Lines[txtDataRead.Lines.Length - 1] = null;
                 }
 
-                txtDataRead.Text.Insert(0, identifiant + Environment.NewLine);
-                
+                txtDataRead.Text += identifiant + Environment.NewLine;
+                //txtDataRead.Text.Insert(0, identifiant + Environment.NewLine);
+                txtUSB.Text = identifiant + Environment.NewLine;
                 donneesSeriePretes = false;
             }
 

@@ -32,6 +32,7 @@
             this.tmrCam = new System.Windows.Forms.Timer(this.components);
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabPrincipale = new System.Windows.Forms.TabPage();
+            this.pbLastCapture = new System.Windows.Forms.PictureBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
             this.txtIPView = new System.Windows.Forms.TextBox();
@@ -62,18 +63,17 @@
             this.spc = new gei1076_tools.SerialPortConfigurator();
             this.tmrSerie = new System.Windows.Forms.Timer(this.components);
             this.tmrMain = new System.Windows.Forms.Timer(this.components);
-            this.pbLastCapture = new System.Windows.Forms.PictureBox();
             this.tipAcquisition = new System.Windows.Forms.ToolTip(this.components);
             this.tipTestUSB = new System.Windows.Forms.ToolTip(this.components);
             this.tabMain.SuspendLayout();
             this.tabPrincipale.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLastCapture)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.tabCamera.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbCamera)).BeginInit();
             this.tabConfig.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.grboxAcquisition.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbLastCapture)).BeginInit();
             this.SuspendLayout();
             // 
             // tmrCam
@@ -110,6 +110,15 @@
             this.tabPrincipale.TabIndex = 2;
             this.tabPrincipale.Text = "Principale";
             this.tabPrincipale.UseVisualStyleBackColor = true;
+            // 
+            // pbLastCapture
+            // 
+            this.pbLastCapture.Location = new System.Drawing.Point(519, 223);
+            this.pbLastCapture.Name = "pbLastCapture";
+            this.pbLastCapture.Size = new System.Drawing.Size(202, 178);
+            this.pbLastCapture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pbLastCapture.TabIndex = 15;
+            this.pbLastCapture.TabStop = false;
             // 
             // groupBox3
             // 
@@ -303,7 +312,7 @@
             this.txtIPServeur.Name = "txtIPServeur";
             this.txtIPServeur.Size = new System.Drawing.Size(100, 20);
             this.txtIPServeur.TabIndex = 1;
-            this.txtIPServeur.Text = "172.16.225.9";
+            this.txtIPServeur.Text = "24.122.0.207";
             // 
             // label1
             // 
@@ -393,14 +402,6 @@
             this.tmrMain.Interval = 250;
             this.tmrMain.Tick += new System.EventHandler(this.tmrMain_Tick);
             // 
-            // pbLastCapture
-            // 
-            this.pbLastCapture.Location = new System.Drawing.Point(519, 223);
-            this.pbLastCapture.Name = "pbLastCapture";
-            this.pbLastCapture.Size = new System.Drawing.Size(202, 178);
-            this.pbLastCapture.TabIndex = 15;
-            this.pbLastCapture.TabStop = false;
-            // 
             // frmRelais
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -414,6 +415,7 @@
             this.tabMain.ResumeLayout(false);
             this.tabPrincipale.ResumeLayout(false);
             this.tabPrincipale.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLastCapture)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.tabCamera.ResumeLayout(false);
@@ -424,7 +426,6 @@
             this.groupBox2.PerformLayout();
             this.grboxAcquisition.ResumeLayout(false);
             this.grboxAcquisition.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbLastCapture)).EndInit();
             this.ResumeLayout(false);
 
         }
