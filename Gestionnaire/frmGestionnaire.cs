@@ -266,23 +266,6 @@ namespace Gestionnaire
 
         }
 
-        //private void button1_Click(object sender, EventArgs e)
-        //{
-        //    string timeInMetric = DateTime.Now.Hour.ToString() + ((int)(DateTime.Now.Minute / 60.0 * 100.0)).ToString();
-
-        //    switch (GestionnaireBUS.AAccess("0003870622", "1133", timeInMetric))
-        //    {
-        //        case GestionnaireBUS.AccesTypes.aucun:
-        //            txtMsg.Text = "Aucun";
-        //            break;
-        //        case GestionnaireBUS.AccesTypes.hors_plage:
-        //            txtMsg.Text = "Hors plage";
-        //            break;
-        //        case GestionnaireBUS.AccesTypes.ok:
-        //            txtMsg.Text = "Accès";
-        //            break;
-        //    }
-        //}
 
         private GestionnaireBUS.AccesTypes interrogerBD (string donnees)
         {
