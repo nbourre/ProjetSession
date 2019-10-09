@@ -47,6 +47,8 @@
             this.tabCamera = new System.Windows.Forms.TabPage();
             this.pbCamera = new System.Windows.Forms.PictureBox();
             this.tabConfig = new System.Windows.Forms.TabPage();
+            this.btnAucune = new System.Windows.Forms.Button();
+            this.btnRouge = new System.Windows.Forms.Button();
             this.btnJaune = new System.Windows.Forms.Button();
             this.btnVert = new System.Windows.Forms.Button();
             this.lblUSB = new System.Windows.Forms.Label();
@@ -67,8 +69,6 @@
             this.tmrMain = new System.Windows.Forms.Timer(this.components);
             this.tipAcquisition = new System.Windows.Forms.ToolTip(this.components);
             this.tipTestUSB = new System.Windows.Forms.ToolTip(this.components);
-            this.btnRouge = new System.Windows.Forms.Button();
-            this.btnAucune = new System.Windows.Forms.Button();
             this.tabMain.SuspendLayout();
             this.tabPrincipale.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbLastCapture)).BeginInit();
@@ -269,6 +269,26 @@
             this.tabConfig.Text = "Configuration";
             this.tabConfig.UseVisualStyleBackColor = true;
             // 
+            // btnAucune
+            // 
+            this.btnAucune.Location = new System.Drawing.Point(678, 137);
+            this.btnAucune.Name = "btnAucune";
+            this.btnAucune.Size = new System.Drawing.Size(75, 23);
+            this.btnAucune.TabIndex = 18;
+            this.btnAucune.Text = "Aucune";
+            this.btnAucune.UseVisualStyleBackColor = true;
+            this.btnAucune.Click += new System.EventHandler(this.btnAucune_Click);
+            // 
+            // btnRouge
+            // 
+            this.btnRouge.Location = new System.Drawing.Point(597, 166);
+            this.btnRouge.Name = "btnRouge";
+            this.btnRouge.Size = new System.Drawing.Size(75, 23);
+            this.btnRouge.TabIndex = 17;
+            this.btnRouge.Text = "Rouge";
+            this.btnRouge.UseVisualStyleBackColor = true;
+            this.btnRouge.Click += new System.EventHandler(this.btnRouge_Click);
+            // 
             // btnJaune
             // 
             this.btnJaune.Location = new System.Drawing.Point(597, 137);
@@ -433,26 +453,6 @@
             this.tmrMain.Enabled = true;
             this.tmrMain.Interval = 250;
             this.tmrMain.Tick += new System.EventHandler(this.tmrMain_Tick);
-            // 
-            // btnRouge
-            // 
-            this.btnRouge.Location = new System.Drawing.Point(597, 166);
-            this.btnRouge.Name = "btnRouge";
-            this.btnRouge.Size = new System.Drawing.Size(75, 23);
-            this.btnRouge.TabIndex = 17;
-            this.btnRouge.Text = "Rouge";
-            this.btnRouge.UseVisualStyleBackColor = true;
-            this.btnRouge.Click += new System.EventHandler(this.btnRouge_Click);
-            // 
-            // btnAucune
-            // 
-            this.btnAucune.Location = new System.Drawing.Point(678, 137);
-            this.btnAucune.Name = "btnAucune";
-            this.btnAucune.Size = new System.Drawing.Size(75, 23);
-            this.btnAucune.TabIndex = 18;
-            this.btnAucune.Text = "Aucune";
-            this.btnAucune.UseVisualStyleBackColor = true;
-            this.btnAucune.Click += new System.EventHandler(this.btnAucune_Click);
             // 
             // frmRelais
             // 

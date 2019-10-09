@@ -5,10 +5,8 @@ using gei1076_tools;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Linq;
 using System.IO;
 using System.Drawing.Imaging;
-using Gestionnaire;
 using System.Text.RegularExpressions;
 
 namespace Relais
