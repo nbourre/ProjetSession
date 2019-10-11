@@ -4,7 +4,6 @@ using System.Data;
 using System.Diagnostics;
 using System;
 using System.Reflection;
-using System.Windows.Forms;
 
 namespace Gestionnaire
 {
