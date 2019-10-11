@@ -6,9 +6,7 @@
         public string CodeCarte { get; set; }
         public string Nom { get; set; }
         public string Prenom { get; set; }
-
-
-
+        
         public PersonneModel()
         {
 
@@ -22,9 +20,7 @@
             Prenom = prenom;
         }
 
-        public override string ToString()
-        {
-            return Nom + ", " + Prenom;
-        }
+        public override string ToString() => Nom + ", " + Prenom;
+        
     }
 }
